@@ -2,6 +2,11 @@
   "name": "bpilot",
   "displayName": "BPilot",
   "description": "Ai Code Generator ",
+  "publisher": "trasherr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trasherr/BPilot.git"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.84.0"
@@ -41,13 +46,16 @@
       },
       {
         "command": "bpilot.setBpilotApiKey",
-        "title": "Set Bard Api Key for BPilot Extension"
+        "title": "Set PaLM Api Key for BPilot Extension"
       },
       {
-				"command": "bpilot.addChat",
-				"category": "Calico Colors",
-				"title": "Add Chat"
-			}
+        "command": "bpilot.addChat",
+        "title": "Update BPilot Chat"
+      },
+      {
+        "command": "bpilot.bpilotChat",
+        "title": "Send Chat  Message"
+      }
     ],
     "menus": {
       "editor/context": [
@@ -59,22 +67,20 @@
           "when": "editorHasSelection",
           "command": "bpilot.BpilotErrorFix"
         }
-        
       ]
     },
-    
     "configuration": [
       {
-          "title": "BPilot",
-          "properties": {
-              "bpilot.bardApiKey": {
-                  "type": "string",
-                  "default": "",
-                  "description": "Bard API key for BPilot"
-              }
+        "title": "BPilot",
+        "properties": {
+          "bpilot.bardApiKey": {
+            "type": "string",
+            "default": "",
+            "description": "Bard API key for BPilot"
           }
+        }
       }
-  ]
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

@@ -1,3 +1,4 @@
+import { DiscussServiceClient } from '@google-ai/generativelanguage';
 import * as vscode from 'vscode';
 const { TextServiceClient } = require("@google-ai/generativelanguage").v1beta2;
 const { GoogleAuth } = require("google-auth-library");
@@ -21,10 +22,54 @@ export const setApiKey = (context: vscode.ExtensionContext) => {
     context.subscriptions.push(disposable);
 };
 
+export const bpilotChat = (context: vscode.ExtensionContext) => {
+
+
+    let disposable = vscode.commands.registerCommand('bpilot.bpilotChat', async (context) => {
+        
+        if(context["text"] === undefined){
+            return ;
+        }
+        let key: string | undefined = await vscode.workspace.getConfiguration().get('bpilot.bardApiKey') ;
+
+        
+        if(!key || key === "") {
+            vscode.window.showInformationMessage('API Key Not Found');
+            return ;
+        }
+      
+        vscode.window.showInformationMessage('Processing ...');
+                 
+        const MODEL_NAME = "models/chat-bison-001";
+        const client = new DiscussServiceClient({
+            authClient: new GoogleAuth().fromAPIKey(key),
+        });
+
+        
+        client
+        .generateMessage({
+            model: MODEL_NAME,
+            candidateCount: 1,
+            prompt: {
+                messages: [{ content: context["text"]}],
+            },
+        })
+        .then((result: any) => {
+            console.log(result[0].candidates[0]);
+            vscode.commands.executeCommand('bpilot.addChat',{ arg1: true,arg2:result[0].candidates[0].content});
+        });
+      
+        
+	});
+
+    context.subscriptions.push(disposable);
+};
+
 export const bpilotGenerate = (context: vscode.ExtensionContext) => {
     let disposable = vscode.commands.registerCommand('bpilot.BpilotGenerate', async () => {
         let key: string | undefined = await vscode.workspace.getConfiguration().get('bpilot.bardApiKey') ;
 
+        
         if(!key || key === "") {
             vscode.window.showInformationMessage('API Key Not Found');
             return ;
@@ -36,6 +81,7 @@ export const bpilotGenerate = (context: vscode.ExtensionContext) => {
             vscode.window.showInformationMessage('No active editor found.');
             return ;
         } 
+        vscode.commands.executeCommand('bpilot.addChat',{ arg1: false,arg2:editor.document.getText(editor.selection)});
         
         vscode.window.showInformationMessage('Generating!');
             
@@ -66,6 +112,7 @@ export const fixError = (context: vscode.ExtensionContext) => {
         }
         
         const editor = vscode.window.activeTextEditor;
+        vscode.commands.executeCommand('bpilot.addChat',{ arg1: false,arg2:"Fix code"});
         
         if (!editor) {
             vscode.window.showInformationMessage('No active editor found.');
@@ -93,6 +140,7 @@ export const fixError = (context: vscode.ExtensionContext) => {
         .then((result: any) => {
             // console.log(result[0].candidates[0].output);
             let editor = vscode.window.activeTextEditor;
+            vscode.commands.executeCommand('bpilot.addChat',{ arg1: true,arg2:result[0].candidates[0].output});
 
             let ch = result[0].candidates[0].output.search('\n');
             let fixedCode = result[0].candidates[0].output.slice(ch,-3);
@@ -170,7 +218,8 @@ function bigFile(editor: vscode.TextEditor,key: String){
         },
     })
     .then((result: any) => {
-        console.log(result[0].candidates[0].output);
+        vscode.commands.executeCommand('bpilot.addChat',{ arg1: true,arg2:result[0].candidates[0].output});
+
         let editor = vscode.window.activeTextEditor;
         
         let st_imports = result[0].candidates[0].output.search("// Imports: Start //");
@@ -202,7 +251,7 @@ function smallFile(editor: vscode.TextEditor,key: String){
     const prompt =  `
         ${editor.document.getText(editor.selection)}
 
-        ${ editor.document.getText()}
+        ${ editor.document.getText(new vscode.Range(new vscode.Position(0,0), new vscode.Position(editor.selection.end.line+1,0)))}
 
         Ony write new code 
         Include proper comments for explanation 
@@ -227,7 +276,8 @@ function smallFile(editor: vscode.TextEditor,key: String){
         },
     })
     .then((result: any) => {
-        console.log(result[0].candidates[0].output);
+        // console.log(result[0].candidates[0].output);
+        vscode.commands.executeCommand('bpilot.addChat',{ arg1: true,arg2:result[0].candidates[0].output});
         
         let editor = vscode.window.activeTextEditor;
         

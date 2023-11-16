@@ -13,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 	commandsActivator.setApiKey(context);
 	commandsActivator.bpilotGenerate(context);
 	commandsActivator.fixError(context);
+	commandsActivator.bpilotChat(context);
 
 
 	const provider = new SidebarProvider(context.extensionUri);
@@ -21,9 +22,17 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.registerWebviewViewProvider(SidebarProvider.viewType, provider));
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('bpilot.addChat', () => {
-			provider.addChat();
-		}));
+		vscode.commands.registerCommand('bpilot.addChat', (context) => {
+		
+			if(context["arg1"] === undefined || context["arg2"] === undefined){
+				vscode.window.showInformationMessage('Args not found');
+				return ;
+			}
+			
+			provider.addChat(context["arg1"],context["arg2"]);
+		})
+	);
+
 	
 
 	// The command has been defined in the package.json file

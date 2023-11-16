@@ -1,25 +1,3 @@
-// import { TreeDataProvider, TreeItem, WebviewViewProvider } from 'vscode';
-
-
-// class SidebarProvider implements TreeDataProvider<string> {
-
-//     private data: string[] = ['Item 1', 'Item 2'];
-
-//     getChildren(element?: string): string[] | Thenable<string[]> {
-//         return this.data;
-//     }
-
-//     getTreeItem(element: string): TreeItem | Thenable<TreeItem> {
-//         return {
-//             label: element,
-//         };
-//     }
-// }
-
-
-// export default SidebarProvider;
-import fs from "fs";
-
 import * as vscode from 'vscode';
 
 class SidebarProvider implements vscode.WebviewViewProvider {
@@ -52,9 +30,10 @@ class SidebarProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
-				case 'clear':
+				case 'chat':
 					{
-						console.log("recieved");
+						console.log("chat:",data.message);
+						vscode.commands.executeCommand('bpilot.bpilotChat',{ text: data.message});
 						
 						break;
 					}
@@ -62,11 +41,12 @@ class SidebarProvider implements vscode.WebviewViewProvider {
 		});
 	}
 
-	public addChat() {
+	public addChat(isAi: any, message: any) {
+		console.log(message);
 		
 		if (this._view) {
-			// this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-			this._view.webview.postMessage({ type: 'addMessage', data: { isAi: false, message: "dasfasdf fdg sd" } });
+			this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
+			this._view.webview.postMessage({ type: 'addMessage', data: { isAi: isAi, message: message } });
 		}
 	}
 
@@ -77,10 +57,11 @@ class SidebarProvider implements vscode.WebviewViewProvider {
 		// Do the same for the stylesheet.
 		// const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'assets', 'reset.css'));
 		const aiRobo = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'assets', 'ai-robo.png'));
+		const sendIcon = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'assets', 'paper-plane-solid.svg'));
+		const trashIcon = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'assets', 'trash-solid.svg'));
 		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'assets', 'main.css'));
-
 		// Use a nonce to only allow a specific script to be run.
-		// const nonce = getNonce();
+		const nonce = getNonce();
 		
 		// Use a nonce to only allow a specific script to be run.
 		let html: string = `
@@ -88,25 +69,25 @@ class SidebarProvider implements vscode.WebviewViewProvider {
 		<html lang="en">
 		<head>
 			<meta charset="UTF-8">
+			<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} https:;  style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title>Dark Theme Chat UI</title>
-			<link href="${styleMainUri}" rel="stylesheet">
-
+			<link href="${styleMainUri}"  nonce="${nonce}" rel="stylesheet" type="text/css">
+			
 		</head>
 		<body>
-			<img src="${aiRobo}" alt="">
-			<div class="chat-container" id="chatContainer">
-				<div class="message user-message">Hello, How can i help??.</div>
-				<div class="message other-message">Hi, this is a response from someone else.</div>
-			</div>
-			<div class="input-container">
-				<input type="text" id="messageInput" placeholder="Type your message...">
-				<button>Send</button>
-			</div>
-			<script src="${scriptUri}"></script>
+				<img src="${aiRobo}" alt="">
+				
+				<div class="chat-container" id="chatContainer">
+				</div>
+				<div class="input-container">
+					<input type="text" id="messageInput" placeholder="Type your message...">
+					<button id="chatMessageButton"><img class="icon" src="${sendIcon}" alt=""></button>
+					<button id="clearMessagesButton"><img class="icon" src="${trashIcon}" alt=""></button>
+				</div>
+			<script nonce="${nonce}" src="${scriptUri}"></script>
 		</body>
 		</html>
-
 		` ;
 		
 		return html;
