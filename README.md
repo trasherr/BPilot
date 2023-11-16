@@ -36,4 +36,4 @@ This is an Initial release so it may have some bugs!!!
 
 ## Demo
 
-![Logo](https://i.ibb.co/8NkqYdW/bpilot-extension.gif)
+![](https://i.ibb.co/8NkqYdW/bpilot-extension.gif)
