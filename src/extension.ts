@@ -23,7 +23,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('bpilot.addChat', (context) => {
-		
+			console.log("addchat");
+			
 			if(context["arg1"] === undefined || context["arg2"] === undefined){
 				vscode.window.showInformationMessage('Args not found');
 				return ;

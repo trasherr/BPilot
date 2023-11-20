@@ -30,7 +30,7 @@ A Google account for PaLM API Key.
 Code Generate in middle of the file gives improper results (Code gen ant the end of the file works fine).
 
 
-### 1.0.0
+### 0.0.1
 
 This is an Initial release so it may have some bugs!!!
 

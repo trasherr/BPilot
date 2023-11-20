@@ -81,9 +81,9 @@ class SidebarProvider implements vscode.WebviewViewProvider {
 				<div class="chat-container" id="chatContainer">
 				</div>
 				<div class="input-container">
-					<input type="text" id="messageInput" placeholder="Type your message...">
-					<button id="chatMessageButton"><img class="icon" src="${sendIcon}" alt=""></button>
-					<button id="clearMessagesButton"><img class="icon" src="${trashIcon}" alt=""></button>
+					<input type="text" id="bpilot.messageInput" placeholder="Type your message...">
+					<button id="bpilot.chatMessageButton"><img class="icon" src="${sendIcon}" alt=""></button>
+					<button id="bpilot.clearMessagesButton"><img class="icon" src="${trashIcon}" alt=""></button>
 				</div>
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 		</body>

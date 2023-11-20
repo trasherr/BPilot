@@ -2,6 +2,8 @@ import { DiscussServiceClient } from '@google-ai/generativelanguage';
 import * as vscode from 'vscode';
 const { TextServiceClient } = require("@google-ai/generativelanguage").v1beta2;
 const { GoogleAuth } = require("google-auth-library");
+// import { TextServiceClient } from "@google-ai/generativelanguage";
+// import { GoogleAuth } from "google-auth-library";
 
 export const setApiKey = (context: vscode.ExtensionContext) => {
     let disposable = vscode.commands.registerCommand('bpilot.setBpilotApiKey', async () => {
@@ -203,7 +205,7 @@ function getPromptFixError(editor: vscode.TextEditor){
 }
 
 
-function bigFile(editor: vscode.TextEditor,key: String){
+function bigFile(editor: vscode.TextEditor,key: string){
     const MODEL_NAME = "models/text-bison-001";
     const client = new TextServiceClient({
         authClient: new GoogleAuth().fromAPIKey(key),
@@ -243,7 +245,7 @@ function bigFile(editor: vscode.TextEditor,key: String){
 
 
 
-function smallFile(editor: vscode.TextEditor,key: String){
+function smallFile(editor: vscode.TextEditor,key: string){
     const MODEL_NAME = "models/text-bison-001";
     const client = new TextServiceClient({
         authClient: new GoogleAuth().fromAPIKey(key),

@@ -13,7 +13,7 @@
      /** @type {Array<{ isAi: boolean, message: string, id: number }>} */
     let chat = oldState || [ ];
     let autoId = 0;
-    autoId = oldState.reduce((max,item) => autoId > item.id ? max = autoId : max = item.id, 0 );
+    chat.forEach(item => autoId > item.id ? autoId = autoId : autoId = item.id );
     autoId += 1;
       // Handle messages sent from the extension to the webview
       window.addEventListener('message', event => {
@@ -74,10 +74,10 @@
     }
 
     function chatBard(){
-
+        alert("Fgsdfsd");
         // @ts-ignore
-        const text = document.getElementById('messageInput')?.value;
-        if(text.length < 3){
+        const text = document.getElementById('bpilot.messageInput')?.value;
+        if(text.length < 1){
             return ;
         }
 
@@ -88,10 +88,11 @@
 
     }
     resumeMessages();
+    alert("Fgsdfsd");
 
 
-    const clearButton = document.getElementById('clearMessagesButton');
-    const chatButton = document.getElementById('chatMessageButton');
+    const clearButton = document.getElementById('bpilot.clearMessagesButton');
+    const chatButton = document.getElementById('bpilot.chatMessageButton');
     clearButton?.addEventListener("click", clearMessages);
     chatButton?.addEventListener("click", chatBard);
 
